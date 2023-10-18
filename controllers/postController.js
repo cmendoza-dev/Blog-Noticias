@@ -11,6 +11,14 @@ module.exports = {
         }
     },
 
+    // postController
+
+    detail: async function(req, res) {
+        const post = await Post.findById(req.params.id);
+
+        res.render('single', { post });
+    },
+
     detail: async function (req, res) {
         try {
             let val_id = req.params.id;
@@ -27,8 +35,10 @@ module.exports = {
         }
     },
 
-    create: async function(titulo, categoria, fecha, descripcion) {
+    create: async function (req, res) {
         try {
+            const { titulo, categoria, fecha, descripcion } = req.body;
+
             const newPost = new model({
                 titulo,
                 categoria,
@@ -38,11 +48,14 @@ module.exports = {
 
             await newPost.save();
             console.log('Nuevo post creado:', newPost);
+
+            res.redirect('/category');
         } catch (error) {
             console.error(error);
+            res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
         }
     },
-   
+
 
     update: async function (req, res) {
         try {
@@ -54,11 +67,11 @@ module.exports = {
                 fecha: req.body.fecha,
                 comentarios: [
                     {
-                      autor: String,
-                      mensaje: String,
-                      fecha: Date
+                        autor: String,
+                        mensaje: String,
+                        fecha: Date
                     }
-                  ]
+                ]
             };
 
             let newData = await model.updateOne({ _id: val_id }, datos);
@@ -74,16 +87,16 @@ module.exports = {
     delete: async function (req, res) {
         try {
             let val_id = req.params.id;
-    
+
             await model.deleteOne({ _id: val_id });
-    
+
             res.sendStatus(200);
         } catch (error) {
             console.error(error);
             res.sendStatus(500);
         }
     },
-    
+
     addComment: async (req, res) => {
         const { postId, comment } = req.body;
 
@@ -120,11 +133,6 @@ module.exports = {
             console.error(err);
             res.status(500).send('Error eliminando comentario');
         }
-    },
-
-    getPost: async (req, res) => {
-        const post = await Post.findById(req.params.id);
-
-        res.render('single', { post });
     }
+
 };

@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var controller = require('../controllers/postController');
 
-
 router.post('/create', function(req, res) {
     controller.create(req, res);
 });
