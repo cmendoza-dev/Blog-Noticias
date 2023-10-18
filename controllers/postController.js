@@ -11,14 +11,6 @@ module.exports = {
         }
     },
 
-    // postController
-
-    detail: async function(req, res) {
-        const post = await Post.findById(req.params.id);
-
-        res.render('single', { post });
-    },
-
     detail: async function (req, res) {
         try {
             let val_id = req.params.id;
