@@ -48,83 +48,92 @@ module.exports = {
         }
     },
 
-
-    update: async function (req, res) {
+    obtenerElemento: async function(req, res) {
+        const id = req.params.id;
         try {
-            let val_id = req.body.id;
-            let datos = {
-                titulo: req.body.titulo,
-                descripcion: req.body.descripcion,
-                categoria: req.body.categoria,
-                fecha: req.body.fecha,
-                comentarios: [
-                    {
-                        autor: String,
-                        mensaje: String,
-                        fecha: Date
-                    }
-                ]
+            const elemento = await model.findById(id);
+            res.json(elemento);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Ocurrió un error al obtener el elemento.' });
+        }
+    },
+
+    editarElemento: async function(req, res) {
+        const id = req.body.id;
+        const newData = {
+            titulo: req.body.titulo,
+            categoria: req.body.categoria,
+            fecha: req.body.fecha,
+            descripcion: req.body.descripcion
+        };
+
+        try {
+            const elementoActualizado = await model.findByIdAndUpdate(id, newData);
+            res.redirect('/category');
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Ocurrió un error al editar el elemento.' });
+        }
+    },
+
+    delete: async function(_id) {
+        try {
+            const deletedDocument = await model.findByIdAndRemove(_id);
+            console.log('Documento borrado:', deletedDocument);
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    createComment: async function (req, res) {
+        try {
+            let postId = req.params.id;
+            let newComment = {
+                autor: req.body.autor,
+                mensaje: req.body.mensaje,
+                fecha: new Date()
             };
 
-            let newData = await model.updateOne({ _id: val_id }, datos);
+            await model.updateOne(
+                { _id: postId },
+                { $push: { comentarios: newComment } }
+            );
 
-            res.send(newData);
+            res.redirect(`/show/${postId}`);
         } catch (error) {
             console.error(error);
-            res.sendStatus(500);
+            res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
         }
     },
 
-
-    delete: async function (req, res) {
+    updateComment: async function (req, res) {
         try {
-            let val_id = req.params.id;
+            let postId = req.params.id;
+            let commentId = req.params.commentId;
 
-            await model.deleteOne({ _id: val_id });
+            // Implementa la lógica para actualizar el comentario aquí
 
-            res.sendStatus(200);
+            res.redirect(`/show/${postId}`);
         } catch (error) {
             console.error(error);
-            res.sendStatus(500);
+            res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
         }
     },
 
-    addComment: async (req, res) => {
-        const { postId, comment } = req.body;
-
+    deleteComment: async function (req, res) {
         try {
-            const post = await Post.findById(postId);
-            post.comments.push(comment);
-            await post.save();
-            res.redirect(`/posts/${postId}`);
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Error agregando comentario');
-        }
-    },
+            let postId = req.params.id;
+            let commentId = req.params.commentId;
 
-    getComments: async (req, res) => {
-        try {
-            const post = await Post.findById(req.params.id);
-            res.json(post.comments);
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Error obteniendo comentarios');
-        }
-    },
+            // Implementa la lógica para eliminar el comentario aquí
 
-    deleteComment: async (req, res) => {
-        try {
-            const { postId, commentId } = req.params;
-            const post = await Post.findById(postId);
-            const comment = post.comments.id(commentId);
-            await comment.remove();
-            await post.save();
-            res.json({ message: 'Comentario eliminado' });
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Error eliminando comentario');
+            res.redirect(`/show/${postId}`);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
         }
     }
 
 };
+

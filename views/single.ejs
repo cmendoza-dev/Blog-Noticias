@@ -125,22 +125,31 @@
                     <!-- News Detail End -->
 
                     <!-- Mostrar comentarios -->
-                    <% post.comments.forEach(comment=> { %>
-                        <div>
-                            <p>
-                                <%= comment.mensaje %>
-                            </p>
-                            <p>Por <%= comment.autor %> el <%= comment.fecha %>
-                            </p>
-                        </div>
-                        <% }) %>
-                    
-                            <!-- Formulario nuevo comentario -->
-                            <form action="/posts/<%= post._id %>/comments" method="POST">
-                                <textarea name="comment[mensaje]"></textarea>
-                                <input type="text" name="comment[autor]">
-                                <button type="submit">Comentar</button>
-                            </form>
+                    <div>
+                        <h2>Comentarios</h2>
+                        <ul>
+                            <% if (comments && comments.length> 0) { %>
+                                <% for (let comment of comments) { %>
+                                    <li>
+                                        <strong>
+                                            <%= comment.autor %>:
+                                        </strong>
+                                        <%= comment.mensaje %>
+                                    </li>
+                                    <% } %>
+                            <% } else { %>
+                                    <li>No hay comentarios.</li>
+                            <% } %>
+                        </ul>
+                    </div>
+
+                    <!-- Formulario para crear comentarios -->
+                    <form method="POST" action="/show/<%= data._id %>/comment/create">
+                        <input type="text" name="autor" placeholder="Tu nombre" required>
+                        <textarea name="mensaje" placeholder="Tu comentario" required></textarea>
+                        <button type="submit">Comentar</button>
+                    </form>
+
                     <!-- Comment Form End -->
                 </div>
 

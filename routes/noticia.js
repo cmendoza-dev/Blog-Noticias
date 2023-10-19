@@ -18,10 +18,16 @@ router.get('/delete/:id', function (req, res) {
     controller.delete(req, res);
 });
 
-router.post('/:id/comments', postController.addComment);
+router.post('/comment/create/:id', function (req, res) {
+    controller.createComment(req, res);
+});
 
-router.get('/:id/comments', postController.getComments);
+router.post('/comment/update/:id/:commentId', function (req, res) {
+    controller.updateComment(req, res);
+});
 
-router.delete('/:id/comments/:commentId', postController.deleteComment);
+router.get('/comment/delete/:id/:commentId', function (req, res) {
+    controller.deleteComment(req, res);
+});
 
 module.exports = router;
