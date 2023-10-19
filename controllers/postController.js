@@ -91,30 +91,36 @@ module.exports = {
     },
 
     getComments: async function (req, res) {
-        const id = req.params.id;
-        const data = await model.findById(id);
-        // obtener comentarios
-        const comments = data.comentarios;
-        res.render('noticias', {
-            comments
-        });
+        try {
+            const postId = req.params.id;
+            const post = await model.findById(postId);
+            const comments = post.comentarios;
+            res.render('noticias', { comments, post });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Ocurrió un error al obtener comentarios.' });
+        }
     },
 
     createComment: async function (req, res) {
         try {
-            let postId = req.params.id;
-            let newComment = {
+            const postId = req.params.id;
+            const newComment = {
                 autor: req.body.autor,
                 mensaje: req.body.mensaje,
                 fecha: new Date()
             };
 
-            await model.updateOne(
-                { _id: postId },
-                { $push: { comentarios: newComment } }
-            );
+            const post = await model.findById(postId);
 
-            res.redirect(`/show/${postId}`);
+            if (!post) {
+                return res.status(404).json({ error: 'Publicación no encontrada.' });
+            }
+
+            post.comentarios.push(newComment);
+            await post.save();
+
+            res.redirect(`/noticias/${postId}`);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });

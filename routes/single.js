@@ -1,22 +1,23 @@
 var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/postController');
-const model = require('../models/post');
 
-/* Inicio */
-router.get('/', function(req, res, next) {
-res.render('noticias');
+const Post = require('../models/post'); // Importa el modelo de publicación
+
+router.get('/:id', async (req, res, next) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).send('Post no encontrado');
+        }
+        res.render('single', { post: post });
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.get('/show/:id', async function (req, res) {
-    const articleId = req.params.id;
-
-    // Obtiene los comentarios del artículo desde tu base de datos
-    const comments = await obtenerComentariosDesdeLaBaseDeDatos(articleId);
-
-    res.render('noticias', { comments, id: articleId });
-});
-
-router.get('/:id', controller.getComments);
+// Esta ruta renderiza la vista 'single' para una publicación individual
+router.get('/:id', controller.detail);
 
 module.exports = router;
