@@ -86,6 +86,16 @@ module.exports = {
         }
     },
 
+    getComments: async function (req, res) {
+        const id = req.params.id;
+        const data = await model.findById(id);
+        // obtener comentarios
+        const comments = data.comentarios;
+        res.render('single', {
+            comments
+        });
+    },
+
     createComment: async function (req, res) {
         try {
             let postId = req.params.id;
@@ -113,7 +123,6 @@ module.exports = {
             let commentId = req.params.commentId;
 
             // Implementa la lógica para actualizar el comentario aquí
-
             res.redirect(`/show/${postId}`);
         } catch (error) {
             console.error(error);
@@ -127,13 +136,10 @@ module.exports = {
             let commentId = req.params.commentId;
 
             // Implementa la lógica para eliminar el comentario aquí
-
             res.redirect(`/show/${postId}`);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
         }
     }
-
 };
-

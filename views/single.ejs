@@ -144,7 +144,7 @@
                     </div>
 
                     <!-- Formulario para crear comentarios -->
-                    <form method="POST" action="/show/<%= data._id %>/comment/create">
+                    <form method="POST" action="/show/<%= id %>/comment/create">
                         <input type="text" name="autor" placeholder="Tu nombre" required>
                         <textarea name="mensaje" placeholder="Tu comentario" required></textarea>
                         <button type="submit">Comentar</button>

@@ -9,23 +9,15 @@ res.render('single');
 });
 
 router.get('/show/:id', async function (req, res) {
-    try {
-        let val_id = req.params.id;
-        let data = await model.findOne({ _id: val_id });
+    const articleId = req.params.id;
 
-        if (!data) {
-            return res.status(404).json({ error: 'Objeto no encontrado.' });
-        }
+    // Obtiene los comentarios del artículo desde tu base de datos
+    const comments = await obtenerComentariosDesdeLaBaseDeDatos(articleId);
 
-        // Asegúrate de que data.comentarios esté definido y no sea null o vacío
-        const comments = data.comentarios || [];
-
-        res.render('single', { comments: comments }); // Asegúrate de que "comments" contenga los comentarios
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
-    }
+    res.render('single', { comments, id: articleId });
 });
 
+
+router.get('/:id', controller.getComments);
 
 module.exports = router;

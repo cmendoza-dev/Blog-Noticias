@@ -20,7 +20,4 @@ router.get('/obtener-elemento/:id', controller.obtenerElemento);
 // Editar elemento
 router.post('/editar', controller.editarElemento);
 
-
-
-
 module.exports = router;

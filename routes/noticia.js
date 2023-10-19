@@ -6,9 +6,14 @@ router.post('/create', function(req, res) {
     controller.create(req, res);
 });
 
-router.get('/show/:id', function(req, res) {
-    controller.detail (req, res);
-});
+router.get('/show/:id', async function (req, res) {
+    // obtener comentarios
+    const comments = // obtener comentarios de la DB
+
+    res.render('single', {
+        comments: comments
+    })
+})
 
 router.post('/update', function(req, res) {
     controller.update(req, res);
