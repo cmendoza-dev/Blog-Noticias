@@ -2,13 +2,14 @@ var express = require('express');
 var router = express.Router();
 var controller = require('../controllers/postController');
 
-/* Inicio */
 router.get('/', function(req, res, next) {
-    res.render('contact');
+    res.render('editarPost');
 });
 
-router.post('/crear_post', function(req, res) {
-    controller.create(req, res);
-});
+router.get('/:id', controller.mostrarFormularioEditar);
+
+router.post('/:id', controller.editarElemento);
+
+
 
 module.exports = router;

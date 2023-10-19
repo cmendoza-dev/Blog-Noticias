@@ -5,7 +5,7 @@ const model = require('../models/post');
 
 /* Inicio */
 router.get('/', function(req, res, next) {
-res.render('single');
+res.render('noticias');
 });
 
 router.get('/show/:id', async function (req, res) {
@@ -14,9 +14,8 @@ router.get('/show/:id', async function (req, res) {
     // Obtiene los comentarios del artículo desde tu base de datos
     const comments = await obtenerComentariosDesdeLaBaseDeDatos(articleId);
 
-    res.render('single', { comments, id: articleId });
+    res.render('noticias', { comments, id: articleId });
 });
-
 
 router.get('/:id', controller.getComments);
 

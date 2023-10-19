@@ -3,8 +3,8 @@ let model = require("../models/post");
 module.exports = {
     show: async function (req, res) {
         try {
-            const items = await model.find({});
-            res.render('category', { items });
+            const items = await model.find({}).sort({ fecha: -1 });
+            res.render('index', { items });
         } catch (error) {
             console.error(error);
             res.sendStatus(500);
@@ -41,26 +41,29 @@ module.exports = {
             await newPost.save();
             console.log('Nuevo post creado:', newPost);
 
-            res.redirect('/category');
+            res.redirect('/');
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
         }
     },
 
-    obtenerElemento: async function(req, res) {
+    mostrarFormularioEditar: async function(req, res) {
         const id = req.params.id;
         try {
             const elemento = await model.findById(id);
-            res.json(elemento);
+            console.log(elemento); // Verifica si se obtiene el elemento
+            res.render('editarPost', { elemento: elemento });
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Ocurrió un error al obtener el elemento.' });
         }
     },
+    
 
-    editarElemento: async function(req, res) {
-        const id = req.body.id;
+    editarElemento: async function (req, res) {
+        const id = req.params.id;
+        console.log(id);
         const newData = {
             titulo: req.body.titulo,
             categoria: req.body.categoria,
@@ -70,14 +73,15 @@ module.exports = {
 
         try {
             const elementoActualizado = await model.findByIdAndUpdate(id, newData);
-            res.redirect('/category');
+            console.error(elementoActualizado);
+            res.redirect('/');
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Ocurrió un error al editar el elemento.' });
         }
     },
 
-    delete: async function(_id) {
+    delete: async function (_id) {
         try {
             const deletedDocument = await model.findByIdAndRemove(_id);
             console.log('Documento borrado:', deletedDocument);
@@ -91,7 +95,7 @@ module.exports = {
         const data = await model.findById(id);
         // obtener comentarios
         const comments = data.comentarios;
-        res.render('single', {
+        res.render('noticias', {
             comments
         });
     },
