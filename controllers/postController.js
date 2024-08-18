@@ -11,26 +11,11 @@ module.exports = {
         }
     },
 
-    detail: async function (req, res) {
-        try {
-            let val_id = req.params.id;
-            let data = await model.findOne({ _id: val_id });
-
-            if (!data) {
-                return res.status(404).json({ error: 'Objeto no encontrado.' });
-            }
-
-            res.json(data);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud.' });
-        }
-    },
-
     create: async function (req, res) {
         try {
+            // extraer las propiedades
             const { titulo, categoria, fecha, descripcion } = req.body;
-
+            // llenar las propiedades
             const newPost = new model({
                 titulo,
                 categoria,
@@ -39,8 +24,8 @@ module.exports = {
             });
 
             await newPost.save();
-            console.log('Nuevo post creado:', newPost);
 
+            console.log('Nuevo post creado:', newPost);
             res.redirect('/');
         } catch (error) {
             console.error(error);
@@ -48,8 +33,10 @@ module.exports = {
         }
     },
 
-    mostrarFormularioEditar: async function(req, res) {
+    mostrarFormularioEditar: async function (req, res) {
+        // tomar el valor del parámetro
         const id = req.params.id;
+
         try {
             const elemento = await model.findById(id);
             console.log(elemento); // Verifica si se obtiene el elemento
@@ -59,7 +46,6 @@ module.exports = {
             res.status(500).json({ error: 'Ocurrió un error al obtener el elemento.' });
         }
     },
-    
 
     editarElemento: async function (req, res) {
         const id = req.params.id;
@@ -90,6 +76,7 @@ module.exports = {
         }
     },
 
+    // Comentarios
     getComments: async function (req, res) {
         try {
             const postId = req.params.id;

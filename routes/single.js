@@ -17,7 +17,4 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-// Esta ruta renderiza la vista 'single' para una publicación individual
-router.get('/:id', controller.detail);
-
 module.exports = router;
